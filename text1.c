@@ -1,10 +1,11 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <time.h>
 typedef struct Node
 {
 	int id;
-	char *name;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+	char *name;
 	char *tel;
 	struct Node *pNext;
 }List;
@@ -14,22 +15,20 @@ void AddNode(List **ppHead,List **ppEnd,List *pNode);         //获取GetNode生
 int GetId();            //自动生成序号
 char *GetName();        //自动生成人名
 char *GetTel();         //自动生成电话号码
-void InitInfo(List **ppHead,List **ppEnd,List *pNode);        //以上步骤的结合
+void InitInfo(List **ppHead,List **ppEnd);        //以上步骤的结合
 
 int main(void)
 {
 	List *pHead = NULL;
 	List *pEnd = NULL;
-	srand((unsigned int)time(NULL));
 
-	InitInfo(&pHead,&pEnd,GetNode());  //随机生成100个人的通讯信息
+	InitInfo(&pHead,&pEnd);  //随机生成100个人的通讯信息
 
 	while(pHead != NULL)                //遍历并显示链表内容
 	{
 		printf("%d\t%s\t%s\n",pHead->id,pHead->name,pHead->tel);
 		pHead = pHead->pNext;
 	}
-
 
 
 	return 0;
@@ -61,59 +60,51 @@ void AddNode(List **ppHead,List **ppEnd,List *pNode)
 
 int GetId()
 {
-	static int id = 0;
+	static int id = 1;
 	return id++;
 }
 
 char *GetName()
 {
-	//必须使用pMark才好使，直接对name做改变不起效，这是为什么呢？
 	char *name = (char*)malloc(6);
-	char *pMark = name;
 	int i;
-	for(i=1;i<=5;i++)
+	for(i=0;i<5;i++)
 	{
-		*pMark = rand() % 26 + 'a';
-		pMark++;
+		name[i] = rand() % 26 + 'a';
 	}
-	*pMark = '\0';
+	name[i] = '\0';
 	return name;
 }
 
-char *GetTel()
+char *GetTel()           //使用char *p = "str";初始化的字符串无法更改
 {
 	char *Tel = (char*)malloc(12);
-	char *pMark = Tel;
 	int i;
 	char num;
-	int Head = rand() % 4;
-	switch(Head)
+	switch(rand()%4)
 	{
 		case 0:
-			Tel = "111";
+			strcpy_s(Tel,sizeof(Tel),"111");
 			break;
 		case 1:
-			Tel = "133";
+			strcpy_s(Tel,sizeof(Tel),"133");
 			break;
 		case 2:
-			Tel = "155";
+			strcpy_s(Tel,sizeof(Tel),"155");
 			break;
 		case 3:
-			Tel = "177";
+			strcpy_s(Tel,sizeof(Tel),"177");
 			break;
 	}
-	pMark += 3;
-	for(i=0;i<8;i++)
+	for(i=3;i<11;i++)
 	{
-		num = rand() % 10 + '0';
-		*pMark = num;
-		pMark++;
+		Tel[i] = rand() % 10 + '0';
 	}
-	*pMark = '\0';
+	Tel[i] = '\0';
 	return Tel;
 }
 
-void InitInfo(List **ppHead,List **ppEnd,List *pNode)
+void InitInfo(List **ppHead,List **ppEnd)
 {
 	int i;
 	srand((unsigned int)time(NULL));
